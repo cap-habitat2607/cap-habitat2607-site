@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', '0');
 // Avis Google — Cap Habitat 26-07
 // Récupère la note et les avis de la fiche Google, avec mise à jour automatique
 // toutes les 12 h (cache), via l'API Google Places (New).
@@ -8,7 +9,13 @@
 // (un niveau au-dessus), envoyé une seule fois avec FileZilla. Contenu de ce fichier :
 //   <?php $CLE_API = 'votre-cle';
 $CLE_API = '';
-if (is_file(__DIR__ . '/../cle-google.php')) { include __DIR__ . '/../cle-google.php'; }
+$ERREUR_CLE = '';
+$FICHIER_CLE = dirname(__DIR__) . '/cle-google.php';
+if (is_file($FICHIER_CLE)) {
+  try { include $FICHIER_CLE; }
+  catch (Throwable $e) { $ERREUR_CLE = 'fichier_cle_invalide (vérifiez les apostrophes droites \' et le ; final)'; }
+}
+$CLE_API = trim((string)$CLE_API);
 $PLACE_ID = 'ChIJD9xCv0tJ9UcR53-o34F-Tz4'; // fiche Google "CAP HABITAT 26-07"
 $DUREE_CACHE = 12 * 3600;                   // 12 heures
 
@@ -22,12 +29,13 @@ if (is_file($cache) && (time() - filemtime($cache)) < $DUREE_CACHE) { readfile($
 
 if ($CLE_API === '') {
   if (is_file($cache)) { readfile($cache); exit; }
-  echo json_encode(['erreur' => 'cle_api_manquante']); exit;
+  echo json_encode(['erreur' => $ERREUR_CLE ?: 'cle_api_manquante', 'fichier_attendu' => $FICHIER_CLE, 'fichier_trouve' => is_file($FICHIER_CLE)], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); exit;
 }
 
 $url = 'https://places.googleapis.com/v1/places/' . rawurlencode($PLACE_ID) . '?languageCode=fr';
 $ctx = stream_context_create(['http' => [
   'method'  => 'GET',
+  'ignore_errors' => true,
   'timeout' => 8,
   'header'  => "X-Goog-Api-Key: $CLE_API\r\n"
              . "X-Goog-FieldMask: displayName,rating,userRatingCount,googleMapsUri,reviews\r\n"
@@ -39,7 +47,8 @@ $data = $brut ? json_decode($brut, true) : null;
 if (!$data || isset($data['error'])) {
   // En cas d'erreur, on garde les derniers avis connus
   if (is_file($cache)) { readfile($cache); exit; }
-  echo json_encode(['erreur' => 'api']); exit;
+  $detail = $data['error']['message'] ?? (isset($http_response_header[0]) ? $http_response_header[0] : 'pas de réponse de Google');
+  echo json_encode(['erreur' => 'api', 'detail' => $detail], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); exit;
 }
 
 $avis = [];

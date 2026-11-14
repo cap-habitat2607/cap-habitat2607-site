@@ -1,0 +1,32 @@
+# Cap Habitat 26-07 — réglages pour l'hébergement OVH
+
+# Forcer HTTPS et l'adresse sans "www"
+RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^(.*)$ https://cap-habitat2607.fr/$1 [L,R=301]
+
+# Anciennes pages WordPress -> nouvelles sections (garde le référencement acquis)
+RewriteCond %{QUERY_STRING} ^page_id=278$
+RewriteRule ^$ https://cap-habitat2607.fr/#realisations [L,R=301,NE,QSD]
+RewriteCond %{QUERY_STRING} ^page_id=294$
+RewriteRule ^$ https://cap-habitat2607.fr/ [L,R=301,QSD]
+RewriteCond %{QUERY_STRING} ^page_id=395$
+RewriteRule ^$ https://cap-habitat2607.fr/mentions-legales.html [L,R=301,QSD]
+
+# Page d'accueil
+DirectoryIndex index.html
+
+# Mise en cache des images et polices (site plus rapide = meilleur référencement)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
+</IfModule>

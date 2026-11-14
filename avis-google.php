@@ -3,9 +3,12 @@
 // Récupère la note et les avis de la fiche Google, avec mise à jour automatique
 // toutes les 12 h (cache), via l'API Google Places (New).
 //
-// RÉGLAGE : collez votre clé API Google entre les guillemets ci-dessous
-// (voir LISEZ-MOI.txt, étape 6).
-$CLE_API  = '';
+// RÉGLAGE : la clé API Google n'est PAS stockée ici (le dépôt GitHub est public).
+// Elle se trouve dans un petit fichier "cle-google.php" placé À CÔTÉ du dossier www
+// (un niveau au-dessus), envoyé une seule fois avec FileZilla. Contenu de ce fichier :
+//   <?php $CLE_API = 'votre-cle';
+$CLE_API = '';
+if (is_file(__DIR__ . '/../cle-google.php')) { include __DIR__ . '/../cle-google.php'; }
 $PLACE_ID = 'ChIJD9xCv0tJ9UcR53-o34F-Tz4'; // fiche Google "CAP HABITAT 26-07"
 $DUREE_CACHE = 12 * 3600;                   // 12 heures
 

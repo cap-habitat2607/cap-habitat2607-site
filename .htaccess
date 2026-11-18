@@ -8,9 +8,9 @@ RewriteRule ^(.*)$ https://cap-habitat2607.fr/$1 [L,R=301]
 
 # Anciennes pages WordPress -> nouvelles sections (garde le référencement acquis)
 RewriteCond %{QUERY_STRING} ^page_id=278$
-RewriteRule ^$ https://cap-habitat2607.fr/#realisations [L,R=301,NE,QSD]
+RewriteRule ^$ https://cap-habitat2607.fr/operations-immobilieres.html#realisations [L,R=301,NE,QSD]
 RewriteCond %{QUERY_STRING} ^page_id=294$
-RewriteRule ^$ https://cap-habitat2607.fr/ [L,R=301,QSD]
+RewriteRule ^$ https://cap-habitat2607.fr/construction.html [L,R=301,QSD]
 RewriteCond %{QUERY_STRING} ^page_id=395$
 RewriteRule ^$ https://cap-habitat2607.fr/mentions-legales.html [L,R=301,QSD]
 
@@ -20,15 +20,20 @@ RewriteRule ^(index\.php)?$ https://cap-habitat2607.fr/ [L,R=301,QSD]
 RewriteRule ^index\.php$ https://cap-habitat2607.fr/ [L,R=301,QSD]
 RewriteRule ^(feed|comments/feed|sample-page|accueil|home|blog)/?$ https://cap-habitat2607.fr/ [L,R=301,NC]
 RewriteRule ^(category|tag|author|page|archives|[0-9]{4})/.*$ https://cap-habitat2607.fr/ [L,R=301,NC]
-RewriteRule ^(realisations?|nos-realisations)/?$ https://cap-habitat2607.fr/#realisations [L,R=301,NE,NC]
-RewriteRule ^(terrains?|nos-terrains|construction|construire)/?$ https://cap-habitat2607.fr/#construction [L,R=301,NE,NC]
+RewriteRule ^(realisations?|nos-realisations)/?$ https://cap-habitat2607.fr/operations-immobilieres.html#realisations [L,R=301,NE,NC]
+RewriteRule ^(terrains?|nos-terrains|construction|construire)/?$ https://cap-habitat2607.fr/construction.html [L,R=301,NC]
 RewriteRule ^(contact|contactez-nous|nous-contacter)/?$ https://cap-habitat2607.fr/#contact [L,R=301,NE,NC]
 RewriteRule ^(mentions-legales|politique-de-confidentialite)/?$ https://cap-habitat2607.fr/mentions-legales.html [L,R=301,NC]
-RewriteRule ^(a-propos|qui-suis-je|qui-sommes-nous)/?$ https://cap-habitat2607.fr/#apropos [L,R=301,NE,NC]
+RewriteRule ^(a-propos|qui-suis-je|qui-sommes-nous)/?$ https://cap-habitat2607.fr/qui-suis-je.html [L,R=301,NC]
 
 # Les fichiers WordPress supprimés n'existent plus : on l'indique clairement à Google (410 = supprimé)
 RewriteRule ^(wp-admin|wp-content|wp-includes|wp-json)(/.*)?$ - [G,NC]
 RewriteRule ^(wp-login\.php|xmlrpc\.php|wp-cron\.php)$ - [G,NC]
+
+# Nouvelles pages : adresses courtes sans .html (ex. /transactions)
+RewriteRule ^(qui-suis-je|transactions|operations-immobilieres|construction)/?$ /$1.html [L,NC]
+RewriteRule ^(transaction|vendre|acheter|estimation)/?$ https://cap-habitat2607.fr/transactions.html [L,R=301,NC]
+RewriteRule ^(rachat|rachat-de-biens|operations|marchand-de-biens)/?$ https://cap-habitat2607.fr/operations-immobilieres.html [L,R=301,NC]
 
 # Page affichée pour une adresse inconnue
 ErrorDocument 404 /404.html
